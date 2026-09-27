@@ -26,7 +26,6 @@ class TransformerLanguageModel(nn.Module):
         self.transformer_blocks = nn.ModuleList(
             [TransformerBlock(d_model, h, d_k, d_v, d_ff) for _ in range(n_layers)]
         )
-        self.layer_norm = nn.LayerNorm(d_model)
         self.output_head = nn.Linear(d_model, n_vocab)
 
     def forward(self, x: Tensor) -> Tensor:
@@ -38,10 +37,7 @@ class TransformerLanguageModel(nn.Module):
         for transformer_block in self.transformer_blocks:
             x = transformer_block(x)
 
-        x = self.layer_norm(x)
-
         logits = self.output_head(x)
-
         return logits
 
 
