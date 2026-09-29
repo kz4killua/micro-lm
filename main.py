@@ -80,7 +80,13 @@ def train(
 
 
 @app.command()
-def generate(load_path: Path, prompt: str, max_tokens: int = 1_000, seed: int = 42):
+def generate(
+    load_path: Path,
+    prompt: str,
+    max_tokens: int = 1_000,
+    temperature: float = 1.0,
+    seed: int = 42,
+):
     device = get_device()
 
     checkpoint = torch.load(load_path, map_location=device, weights_only=True)
@@ -99,6 +105,7 @@ def generate(load_path: Path, prompt: str, max_tokens: int = 1_000, seed: int = 
         context_size=checkpoint["model_config"]["context_size"],
         prompt=prompt,
         max_tokens=max_tokens,
+        temperature=temperature,
     )
 
     typer.echo(completion)

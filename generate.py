@@ -12,6 +12,7 @@ def generate_completion(
     prompt: str,
     max_tokens: int,
     context_size: int,
+    temperature: float,
 ) -> str:
     model.eval()
 
@@ -22,7 +23,7 @@ def generate_completion(
         1, -1
     )
     for _ in range(max_tokens):
-        y = generate_token(model, x, context_size)
+        y = generate_token(model, x, context_size, temperature)
         completion.append(int(y.item()))
         x = torch.cat((x, y), dim=1)[:, -context_size:]
 
@@ -30,8 +31,10 @@ def generate_completion(
 
 
 @torch.no_grad()
-def generate_token(model: nn.Module, x: Tensor, context_size: int) -> Tensor:
+def generate_token(
+    model: nn.Module, x: Tensor, context_size: int, temperature: float
+) -> Tensor:
     context = x[:, -context_size:]
     logits = model(context)[:, -1, :]
-    probs = F.softmax(logits, dim=-1)
+    probs = F.softmax(logits / temperature, dim=-1)
     return torch.multinomial(probs, num_samples=1)
