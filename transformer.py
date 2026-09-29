@@ -71,7 +71,7 @@ class MultiHeadAttention(nn.Module):
         self.attention_heads = nn.ModuleList(
             [AttentionHead(d_model, d_k, d_v) for _ in range(h)]
         )
-        self.W_O = nn.Linear(h * d_v, d_model)
+        self.W_O = nn.Linear(h * d_v, d_model, bias=False)
 
     def forward(self, x: Tensor) -> Tensor:
         x = torch.concat([head(x) for head in self.attention_heads], dim=-1)
