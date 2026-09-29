@@ -48,8 +48,10 @@ def estimate_loss(model: nn.Module, data: Tensor, context_size: int, batch_size:
 def sample_sequence_batch(
     tokens: Tensor, sequence_length: int, batch_size: int
 ) -> tuple[Tensor, Tensor]:
-    starts = torch.randint(0, len(tokens) - sequence_length, (batch_size,))
-    offsets = torch.arange(sequence_length)
+    starts = torch.randint(
+        0, len(tokens) - sequence_length, (batch_size,), device=tokens.device
+    )
+    offsets = torch.arange(sequence_length, device=tokens.device)
     indices = starts[:, None] + offsets[None, :]
     x = tokens[indices]
     y = tokens[indices + 1]

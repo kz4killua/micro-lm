@@ -30,10 +30,11 @@ def train(
     seed: int = 42,
 ):
     torch.manual_seed(seed)
+    device = get_device()
 
     text = text_path.read_text(encoding="utf-8")
     tokenizer = CharacterTokenizer(text)
-    data = torch.tensor(tokenizer.encode(text), dtype=torch.long)
+    data = torch.tensor(tokenizer.encode(text), dtype=torch.long, device=device)
     train_data, val_data = train_val_split(data, train_fraction)
 
     model = TransformerLanguageModel(
@@ -46,6 +47,7 @@ def train(
         d_v=d_v,
         d_ff=d_ff,
     )
+    model = model.to(device)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
@@ -79,10 +81,13 @@ def train(
 
 @app.command()
 def generate(load_path: Path, prompt: str, max_tokens: int = 1_000, seed: int = 42):
-    checkpoint = torch.load(load_path, map_location="cpu", weights_only=True)
+    device = get_device()
+
+    checkpoint = torch.load(load_path, map_location=device, weights_only=True)
 
     model = TransformerLanguageModel(**checkpoint["model_config"])
     model.load_state_dict(checkpoint["model_state_dict"])
+    model = model.to(device)
 
     tokenizer = CharacterTokenizer(checkpoint["tokenizer_chars"])
 
@@ -97,6 +102,14 @@ def generate(load_path: Path, prompt: str, max_tokens: int = 1_000, seed: int = 
     )
 
     typer.echo(completion)
+
+
+def get_device() -> torch.device:
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    if torch.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
 
 
 if __name__ == "__main__":

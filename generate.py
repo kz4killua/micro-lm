@@ -17,7 +17,10 @@ def generate_completion(
 
     completion = []
 
-    x = torch.tensor(tokenizer.encode(prompt)).view(1, -1)
+    device = next(model.parameters()).device
+    x = torch.tensor(tokenizer.encode(prompt), dtype=torch.long, device=device).view(
+        1, -1
+    )
     for _ in range(max_tokens):
         y = generate_token(model, x, context_size)
         completion.append(int(y.item()))
