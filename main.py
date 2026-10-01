@@ -17,7 +17,7 @@ def train(
     save_path: Path,
     *,
     train_fraction: float = 0.9,
-    steps: int = 10_000,
+    steps: int = 5_000,
     batch_size: int = 12,
     learning_rate: float = 1e-3,
     context_size: int = 64,
