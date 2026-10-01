@@ -1,5 +1,5 @@
 [project]
-name = "transformer-from-scratch"
+name = "micro-lm"
 version = "0.1.0"
 description = "A simple transformer language model, implemented from scratch in PyTorch"
 readme = "README.md"
