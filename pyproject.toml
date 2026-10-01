@@ -1,7 +1,7 @@
 [project]
 name = "micro-lm"
 version = "0.1.0"
-description = "A simple transformer language model, implemented from scratch in PyTorch"
+description = "A simple Transformer language model, implemented from scratch in PyTorch"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [

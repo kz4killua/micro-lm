@@ -4,7 +4,7 @@ from torch import Tensor, nn
 
 
 class TransformerLanguageModel(nn.Module):
-    """A transformer-style language model."""
+    """A Transformer-style language model."""
 
     def __init__(
         self,
